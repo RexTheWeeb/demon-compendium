@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Demon;
 use Illuminate\Http\Request;
 
 class DemonController extends Controller
@@ -11,7 +12,8 @@ class DemonController extends Controller
      */
     public function index()
     {
-        return view('test');//
+        $demon = Demon::all();
+        return view('demons.index', compact('demon'));
     }
 
     /**

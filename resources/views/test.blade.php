@@ -10,15 +10,8 @@
 <body>
 @extends('layouts.nav')
 @section('content')
-    @auth
-        <p>Logged In Users See This.</p>
-        @for($i = 0; $i < 5; $i++)
-            <p>Iteration {{$i}}</p>
-        @endfor
-    @endauth
-    @guest
-        <p>Guest Users See This.</p>
-    @endguest
+    <h1>{{ $demon->name }}</h1>
+    <p>{{ $demon->race }}</p>
 @endsection
 </body>
 </html>

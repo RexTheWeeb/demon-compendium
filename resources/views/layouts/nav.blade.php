@@ -10,7 +10,7 @@
 <body>
 <nav>
     <a href="/">Home</a>
-    <a href="/{{ route('demons.index') }}">Demon List</a>
+    <a href="{{ route('demons.index') }}">Demon List</a>
     <a href="/contact">Contact</a>
 </nav>
 @yield('content')

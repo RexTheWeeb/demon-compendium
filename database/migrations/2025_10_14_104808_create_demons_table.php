@@ -14,11 +14,10 @@ return new class extends Migration {
             $table->id();
             $table->string('name');
             $table->string('origin');
-            $table->string('race');
-            $table->string('alignment');
+            $table->foreignId('race_id')->constrained()->onDelete('cascade');
             $table->string('description', 1000);
             $table->string('image_url')->nullable();
-            $table->string('added_by');
+            $table->foreignId('added_by')->constrained('users')->onDelete('cascade');
             $table->timestamps();
         });
     }

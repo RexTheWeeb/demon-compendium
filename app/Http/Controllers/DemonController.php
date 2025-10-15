@@ -3,7 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Models\Demon;
+use App\Models\Race;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class DemonController extends Controller
 {
@@ -21,7 +23,8 @@ class DemonController extends Controller
      */
     public function create()
     {
-        return view('demons.create');
+        $races = Race::all();
+        return view('demons.create', compact('races'));
     }
 
     /**
@@ -32,20 +35,20 @@ class DemonController extends Controller
         $request->validate([
             'name' => ['required', 'max:255'],
             'origin' => ['required', 'max:255'],
-            'race' => ['required', 'max:255'],
+            'race_id' => ['required', 'exists:races,id'],
             'alignment' => ['required', 'max:255'],
             'description' => ['required', 'max:1000'],
             'image_url' => ['required', 'url', 'max:255']
         ]);
 
+        $race = Race::find($request->race_id);
         $demon = new Demon();
         $demon->name = $request->input('name');
         $demon->origin = $request->input('origin');
-        $demon->race = $request->input('race');
-        $demon->alignment = $request->input('alignment');
+        $demon->race_id = $race->id;
         $demon->description = $request->input('description');
         $demon->image_url = $request->input('image_url');
-        $demon->added_by = $request->input('added_by');
+        $demon->added_by = Auth::id();
         $demon->save();
 
         return redirect()->route('demons.index')->with('success', 'Demon created successfully.');

@@ -28,8 +28,10 @@ Route::get('/opening/{test}', function (string $testNaam) {
 });
 
 Route::get('/demons', [DemonController::class, 'index'])->name('demons.index');
-Route::get('/demons/create', [DemonController::class, 'create'])->name('demons.create');
-Route::post('/demons/store', [DemonController::class, 'store'])->name('demons.store');
+Route::middleware(['auth'])->group(function () {
+    Route::get('/demons/create', [DemonController::class, 'create'])->name('demons.create');
+    Route::post('/demons/store', [DemonController::class, 'store'])->name('demons.store');
+});
 Route::get('/demons/{demon}', [DemonController::class, 'show'])->name('demons.show');
 Route::get('demons/{demon}/edit', [DemonController::class, 'edit'])->name('demons.edit');
 Route::put('demons/{demon}', [DemonController::class, 'update'])->name('demons.update');

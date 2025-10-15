@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\DemonController;
 
 Route::get('/', function () {
     return view('home');
@@ -26,6 +27,12 @@ Route::get('/opening/{test}', function (string $testNaam) {
     return view('test', ['test' => $testNaam]);
 });
 
-Route::resource('demons', \App\Http\Controllers\DemonController::class);
+Route::get('/demons', [DemonController::class, 'index'])->name('demons.index');
+Route::get('/demons/create', [DemonController::class, 'create'])->name('demons.create');
+Route::post('/demons/store', [DemonController::class, 'store'])->name('demons.store');
+Route::get('/demons/{demon}', [DemonController::class, 'show'])->name('demons.show');
+Route::get('demons/{demon}/edit', [DemonController::class, 'edit'])->name('demons.edit');
+Route::put('demons/{demon}', [DemonController::class, 'update'])->name('demons.update');
+
 
 require __DIR__ . '/auth.php';

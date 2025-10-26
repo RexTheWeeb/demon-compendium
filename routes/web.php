@@ -35,6 +35,7 @@ Route::middleware(['auth'])->group(function () {
 Route::get('/demons/{demon}', [DemonController::class, 'show'])->name('demons.show');
 Route::get('demons/{demon}/edit', [DemonController::class, 'edit'])->name('demons.edit');
 Route::put('demons/{demon}', [DemonController::class, 'update'])->name('demons.update');
+Route::delete('/demons/{demon}', [DemonController::class, 'destroy'])->name('demons.destroy');
 
 
 require __DIR__ . '/auth.php';

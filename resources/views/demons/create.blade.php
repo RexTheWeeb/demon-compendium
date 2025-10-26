@@ -1,7 +1,7 @@
 @extends('layouts.nav')
 @section('content')
     @auth
-        <form method="POST" action="{{ route('demons.store') }}">
+        <form method="POST" action="{{ route('demons.store') }}" enctype="multipart/form-data">
             @csrf
             <div>
                 <label for="name">Name:</label>
@@ -30,7 +30,7 @@
             </div>
             <div>
                 <label for="image_url">Image URL:</label>
-                <input type="text" id="image_url" name="image_url" required>
+                <input type="file" id="image_url" name="image_url" accept="image/*" required>
             </div>
             <button type="submit">Create Demon</button>
         </form>

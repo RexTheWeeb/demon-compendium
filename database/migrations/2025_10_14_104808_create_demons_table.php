@@ -16,7 +16,7 @@ return new class extends Migration {
             $table->string('origin');
             $table->foreignId('race_id')->constrained()->onDelete('cascade');
             $table->string('description', 1000);
-            $table->string('image_url')->nullable();
+            $table->string('image');
             $table->foreignId('added_by')->constrained('users')->onDelete('cascade');
             $table->timestamps();
         });

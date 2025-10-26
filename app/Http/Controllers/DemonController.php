@@ -6,15 +6,20 @@ use App\Models\Demon;
 use App\Models\Race;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
 
 class DemonController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        $demon = Demon::all();
+        $term = $request->get('q');
+        $demon = Demon::when($term, function ($query, $term) {
+            $query->where('name', 'like', '%' . $term . '%');
+        })->paginate(15);
+
         return view('demons.index', compact('demon'));
     }
 
@@ -38,7 +43,7 @@ class DemonController extends Controller
             'race_id' => ['required', 'exists:races,id'],
             'alignment' => ['required', 'max:255'],
             'description' => ['required', 'max:1000'],
-            'image_url' => ['required', 'url', 'max:255']
+            'image_url' => ['required', 'image', 'max:2048']
         ]);
 
         $race = Race::find($request->race_id);
@@ -47,7 +52,10 @@ class DemonController extends Controller
         $demon->origin = $request->input('origin');
         $demon->race_id = $race->id;
         $demon->description = $request->input('description');
-        $demon->image_url = $request->input('image_url');
+
+        $path = $request->file('image_url')->storePublicly('demons', 'public');
+        $demon->image_url = $path;
+
         $demon->added_by = Auth::id();
         $demon->save();
 
@@ -81,7 +89,7 @@ class DemonController extends Controller
             'race' => ['required', 'max:255'],
             'alignment' => ['required', 'max:255'],
             'description' => ['required', 'max:1000'],
-            'image_url' => ['required', 'url', 'max:255']
+            'image_url' => ['nullable', 'image', 'max:2048']
         ]);
         $demon = Demon::findOrFail($id);
         $demon->name = $request->input('name');
@@ -89,7 +97,13 @@ class DemonController extends Controller
         $demon->race = $request->input('race');
         $demon->alignment = $request->input('alignment');
         $demon->description = $request->input('description');
-        $demon->image_url = $request->input('image_url');
+        if ($request->hasFile('image_url')) {
+            if ($demon->image_url) {
+                Storage::disk('public')->delete($demon->image_url);
+            }
+            $path = $request->file('image_url')->storePublicly('demons', 'public');
+            $demon->image_url = $path;
+        }
         $demon->added_by = $request->input('added_by');
         $demon->save();
         return redirect()->route('demons.index')->with('success', 'Demon updated successfully.');
@@ -100,6 +114,11 @@ class DemonController extends Controller
      */
     public function destroy(string $id)
     {
-        //
+        $demon = Demon::findOrFail($id);
+        if ($demon->image_url) {
+            Storage::disk('public')->delete($demon->image_url);
+        }
+        $demon->delete();
+        return redirect()->route('demons.index')->with('success', 'Demon deleted successfully.');
     }
 }

@@ -75,38 +75,41 @@ class DemonController extends Controller
      */
     public function edit(\App\Models\Demon $demon)
     {
-        return view('demons.edit', compact('demon'));
+        $races = Race::all();
+        return view('demons.edit', compact('demon', 'races'));
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(Request $request, Demon $demon)
     {
         $request->validate([
-            'name' => ['required', 'max:255'],
-            'origin' => ['required', 'max:255'],
-            'race' => ['required', 'max:255'],
-            'alignment' => ['required', 'max:255'],
-            'description' => ['required', 'max:1000'],
-            'image_url' => ['nullable', 'image', 'max:2048']
+            'name' => 'required|max:255',
+            'origin' => 'required|max:255',
+            'race_id' => 'required|exists:races,id',
+            'alignment' => 'required|max:255',
+            'description' => 'required|max:1000',
+            'image' => 'nullable|image|max:2048',
         ]);
-        $demon = Demon::findOrFail($id);
-        $demon->name = $request->input('name');
-        $demon->origin = $request->input('origin');
-        $demon->race = $request->input('race');
-        $demon->alignment = $request->input('alignment');
-        $demon->description = $request->input('description');
-        if ($request->hasFile('image_url')) {
-            if ($demon->image_url) {
-                Storage::disk('public')->delete($demon->image_url);
-            }
-            $path = $request->file('image_url')->storePublicly('demons', 'public');
-            $demon->image_url = $path;
+
+        $demon->fill([
+            'name' => $request->name,
+            'origin' => $request->origin,
+            'race_id' => $request->race_id,
+            'alignment' => $request->alignment,
+            'description' => $request->description,
+        ]);
+
+        if ($request->hasFile('image')) {
+            $path = $request->file('image')->store('demons', 'public');
+            $demon->image = $path;
         }
-        $demon->added_by = $request->input('added_by');
+
+        $demon->added_by = auth()->id();
         $demon->save();
-        return redirect()->route('demons.index')->with('success', 'Demon updated successfully.');
+
+        return redirect()->route('demons.show', $demon)->with('success', 'Demon updated successfully.');
     }
 
     /**

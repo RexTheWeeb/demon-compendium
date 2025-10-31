@@ -1,5 +1,14 @@
 Changelog:
 
+29 Oktober:
+Admin 
+
+28 Oktober:
+CSS opmaak voor overige pagina's (Update, create.)
+Authenticatie toegevoegd voor update, create en delete.
+Profiel pagina aangemaakt.
+Login stuurt je nu naar de home page.
+
 26 Oktober:
 Alles gepusht naar GitHub want ik vergeet het steeds. 
 

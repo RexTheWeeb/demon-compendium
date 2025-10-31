@@ -15,12 +15,38 @@ class DemonController extends Controller
      */
     public function index(Request $request)
     {
-        $term = $request->get('q');
-        $demon = Demon::when($term, function ($query, $term) {
-            $query->where('name', 'like', '%' . $term . '%');
-        })->paginate(15);
+        $query = Demon::query()->with('race');
+        if (!auth()->check() || !auth()->user()->isAdmin()) {
+            $query->where('visible', true);
+        }
+        if ($search = $request->input('q')) {
+            $query->where('name', 'like', '%' . $search . '%');
+        }
 
-        return view('demons.index', compact('demon'));
+        if ($raceId = $request->input('race_id')) {
+            $query->where('race_id', $raceId);
+        }
+
+        if ($alignment = $request->input('alignment')) {
+            $query->whereHas('race', function ($q) use ($alignment) {
+                $q->where('alignment', $alignment);
+            });
+        }
+
+        if ($origin = $request->input('origin')) {
+            $query->where('origin', 'like', "%{$origin}%");
+        }
+
+        $demon = $query->paginate(15)->appends($request->all());
+
+        $races = \App\Models\Race::all();
+        $alignments = \App\Models\Race::select('alignment')->distinct()->pluck('alignment');
+        $origins = Demon::select('origin')
+            ->distinct()
+            ->orderBy('origin')
+            ->pluck('origin');
+
+        return view('demons.index', compact('demon', 'races', 'alignments', 'origins'));
     }
 
     /**
@@ -56,7 +82,7 @@ class DemonController extends Controller
         $path = $request->file('image_url')->storePublicly('demons', 'public');
         $demon->image_url = $path;
 
-        $demon->added_by = Auth::id();
+        $demon->added_by = auth()->id();
         $demon->save();
 
         return redirect()->route('demons.index')->with('success', 'Demon created successfully.');
@@ -117,11 +143,28 @@ class DemonController extends Controller
      */
     public function destroy(string $id)
     {
+        if (auth()->user()->id !== Demon::find($id)->added_by && !auth()->user()->isAdmin()) {
+            return redirect()->route('demons.index')->with('error', 'You are not authorized to delete this demon.');
+        }
+
         $demon = Demon::findOrFail($id);
         if ($demon->image_url) {
             Storage::disk('public')->delete($demon->image_url);
         }
         $demon->delete();
         return redirect()->route('demons.index')->with('success', 'Demon deleted successfully.');
+    }
+
+    public function toggleVisibility(Demon $demon)
+    {
+        $user = Auth::user();
+        if ($user->id !== $demon->added_by && !$user->isAdmin()) {
+            abort(403, 'Unauthorized action.');
+        }
+
+        $demon->visible = !$demon->visible;
+        $demon->save();
+
+        return redirect()->route('demons.show', $demon)->with('success', 'Demon visibility updated successfully.');
     }
 }

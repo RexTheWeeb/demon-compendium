@@ -21,67 +21,95 @@
         </div>
 
         <!-- Search Bar -->
-        <form method="GET" action="{{ route('demons.index') }}" class="flex justify-center mb-8">
-            <div class="flex items-center space-x-2 w-full sm:w-auto">
-                <input
-                    type="text"
-                    name="q"
-                    placeholder="Search demons..."
-                    value="{{ request('q') }}"
-                    class="border border-gray-300 rounded-lg px-4 py-2 w-full sm:w-72 focus:outline-none focus:ring-2 focus:ring-red-400"
-                />
-                <button
-                    type="submit"
-                    class="bg-red-600 text-white px-4 py-2 rounded-lg shadow hover:bg-red-700 transition">
-                    Search
-                </button>
-                @if(request('q'))
-                    <a href="{{ route('demons.index') }}"
-                       class="text-sm text-gray-600 underline ml-2">Clear</a>
-                @endif
-            </div>
+        <form method="GET" action="{{ route('demons.index') }}"
+              class="bg-white rounded-lg shadow-md p-4 mb-6 flex flex-wrap gap-4 items-center justify-center">
+            <!-- Search -->
+            <input type="text" name="q" placeholder="Search demons..." value="{{ request('q') }}"
+                   class="border rounded-md px-3 py-2 w-64 focus:outline-none focus:ring-2 focus:ring-red-400"/>
+
+            <!-- Race filter -->
+            <select name="race_id" class="border rounded-md px-3 py-2 focus:ring-2 focus:ring-red-400">
+                <option value="">All Races</option>
+                @foreach($races as $race)
+                    <option value="{{ $race->id }}" {{ request('race_id') == $race->id ? 'selected' : '' }}>
+                        {{ $race->name }}
+                    </option>
+                @endforeach
+            </select>
+
+            <!-- Alignment filter -->
+            <select name="alignment" class="border rounded-md px-3 py-2 focus:ring-2 focus:ring-red-400">
+                <option value="">All Alignments</option>
+                @foreach($alignments as $align)
+                    <option value="{{ $align }}" {{ request('alignment') == $align ? 'selected' : '' }}>
+                        {{ $align }}
+                    </option>
+                @endforeach
+            </select>
+
+            <!-- Origin filter -->
+            <select name="origin"
+                    class="border rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-red-400">
+                <option value="">All Origins</option>
+                @foreach($origins as $origin)
+                    <option value="{{ $origin }}" {{ request('origin') === $origin ? 'selected' : '' }}>
+                        {{ $origin }}
+                    </option>
+                @endforeach
+            </select>
+
+            <!-- Buttons -->
+            <button type="submit" class="bg-red-600 text-white px-4 py-2 rounded-md hover:bg-red-700 transition">
+                Apply Filters
+            </button>
+
+            @if(request()->hasAny(['q','race_id','alignment','origins']))
+                <a href="{{ route('demons.index') }}" class="text-sm text-gray-600 underline ml-2">Clear</a>
+            @endif
         </form>
 
-        <!-- Demon Row Layout -->
-        <div class="relative">
-            <ul class="flex flex-row gap-6 overflow-x-auto pb-4 px-2 snap-x snap-mandatory scrollbar-thin scrollbar-thumb-gray-400 scrollbar-track-gray-100">
 
-                @forelse($demon as $demons)
-                    <li class="list-none flex-shrink-0 snap-center w-52 sm:w-56 md:w-64 bg-white rounded-xl shadow-md overflow-hidden hover:shadow-lg transition-transform transform hover:-translate-y-1">
+        <!-- Demon Row Layout -->
+        <div class="max-w-7xl mx-auto px-4 py-8">
+            <ul class="grid gap-6" style="display: grid; grid-template-columns: repeat(5, minmax(0, 1fr));">
+
+                @foreach($demon as $demons)
+                    <li class="bg-white rounded-lg shadow-md overflow-hidden flex flex-col text-center hover:shadow-lg hover:-translate-y-1 transition transform duration-200">
                         <a href="{{ route('demons.show', $demons->id) }}" class="block">
                             @php $img = $demons->image ?? $demons->image_url; @endphp
 
-                            <div class="w-full bg-gray-100 flex items-center justify-center overflow-hidden">
+                            <div class="w-full h-48 bg-gray-100 flex items-center justify-center overflow-hidden">
                                 @if($img)
-                                    <img
-                                        src="{{ asset('storage/' . $img) }}"
-                                        alt="{{ $demons->name }}"
-                                        class="w-full h-32 object-cover rounded-t-lg transition-transform duration-200 hover:scale-105"
-                                        loading="lazy">
+                                    <img src="{{ asset('storage/' . $img) }}"
+                                         alt="{{ $demons->name }}"
+                                         class="w-full h-full object-cover"
+                                         loading="lazy">
                                 @else
-                                    <div class="w-full h-64 flex items-center justify-center text-gray-400">
+                                    <div class="w-full h-full flex items-center justify-center text-gray-400">
                                         No image
                                     </div>
                                 @endif
                             </div>
                         </a>
 
-                        <div class="p-3 text-center">
+                        <div class="p-3 flex-1 flex flex-col">
                             <a href="{{ route('demons.show', $demons->id) }}"
-                               class="block text-lg font-semibold text-gray-900 hover:text-red-600 transition truncate">
+                               class="text-base font-semibold text-gray-900 hover:underline mb-1 truncate">
                                 {{ $demons->name }}
                             </a>
-
                             @if($demons->race)
                                 <p class="text-sm text-gray-500 mt-1">{{ $demons->race->name ?? $demons->race }}</p>
                             @endif
                         </div>
                     </li>
-                @empty
-                    <p class="text-center text-gray-500 w-full">No demons found.</p>
-                @endforelse
+                @endforeach
             </ul>
+
+            <div class="mt-8 flex justify-center">
+                {{ $demon->appends(request()->only('q'))->links() }}
+            </div>
         </div>
+
 
         <!-- Pagination -->
         <div class="mt-10 flex justify-center">

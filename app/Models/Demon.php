@@ -4,8 +4,13 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
+
 class Demon extends Model
 {
+
+    protected $casts = [
+        'added_by' => 'integer',
+    ];
 
     public function race()
     {

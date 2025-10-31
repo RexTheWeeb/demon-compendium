@@ -15,7 +15,7 @@ Route::get('/dashboard', function () {
 
 Route::middleware('auth')->group(function () {
     Route::get('/user/profile', [UserController::class, 'show'])->name('users.profile');
-    
+
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
@@ -34,6 +34,7 @@ Route::get('/demons', [DemonController::class, 'index'])->name('demons.index');
 Route::middleware(['auth'])->group(function () {
     Route::get('/demons/create', [DemonController::class, 'create'])->name('demons.create');
     Route::post('/demons/store', [DemonController::class, 'store'])->name('demons.store');
+    Route::patch('demons/{demon}/toggle-visibility', [DemonController::class, 'toggleVisibility'])->name('demons.toggleVisibility');
 });
 Route::get('/demons/{demon}', [DemonController::class, 'show'])->name('demons.show');
 Route::get('demons/{demon}/edit', [DemonController::class, 'edit'])->name('demons.edit');

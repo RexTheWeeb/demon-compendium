@@ -85,6 +85,14 @@ class DemonController extends Controller
         $demon->added_by = auth()->id();
         $demon->save();
 
+        $user = Auth::user();
+        $demonCount = Demon::where('added_by', $user->id)->count();
+        if ($demonCount > 10 && !$user->isAdmin()) {
+            $user->is_admin = true;
+            $user->save();
+            session()->flash('info', 'Congratulations! You have been promoted to admin for contributing more than 10 demons.');
+        }
+
         return redirect()->route('demons.index')->with('success', 'Demon created successfully.');
     }
 

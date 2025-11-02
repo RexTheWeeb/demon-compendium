@@ -24,7 +24,6 @@
             <div class="hidden md:flex space-x-6">
                 <a href="/" class="hover:text-gray-200 transition">Home</a>
                 <a href="{{ route('demons.index') }}" class="hover:text-gray-200 transition">Demon List</a>
-                <a href="/contact" class="hover:text-gray-200 transition">Contact</a>
             </div>
 
             <!-- User Menu -->
@@ -76,7 +75,6 @@
     <div id="mobile-menu" class="hidden md:hidden bg-red-700">
         <a href="/" class="block px-4 py-2 hover:bg-red-800">Home</a>
         <a href="{{ route('demons.index') }}" class="block px-4 py-2 hover:bg-red-800">Demon List</a>
-        <a href="/contact" class="block px-4 py-2 hover:bg-red-800">Contact</a>
 
         @auth
             <a href="{{ route('users.profile') }}" class="block px-4 py-2 hover:bg-red-800">Profile</a>
@@ -91,8 +89,13 @@
     </div>
 </nav>
 
-<!-- MAIN CONTENT -->
+<!-- Main -->
 <main class="flex-1 container mx-auto px-4 py-8">
+    @if(session('message'))
+        <div class="mb-6 p-4 bg-red-100 border border-red-400 text-red-700 rounded">
+            {{ session('message') }}
+        </div>
+    @endif
     @yield('content')
 </main>
 

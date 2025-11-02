@@ -1,7 +1,14 @@
 Changelog:
 
+1 November:
+Contact pagina placeholder verwijderd.
+Admin wordt beschikbaar na 10 demonen.
+Home pagina gevuld met data.
+
 29 Oktober:
-Admin 
+Admin rol aangemaakt.
+Permissies aangepast voor gebruiker en admin.
+Registratie stuurt je nu naar de home page.
 
 28 Oktober:
 CSS opmaak voor overige pagina's (Update, create.)

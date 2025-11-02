@@ -5,7 +5,7 @@
 
         {{-- Header --}}
         <div class="text-center mb-8">
-            <h1 class="text-3xl font-bold text-gray-900 mb-2">{{ $demon->name }}</h1>
+            <h1 class="font-semibold text-gray-700">{{ $demon->name }}</h1>
         </div>
 
         {{-- Image Section --}}

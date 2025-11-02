@@ -8,9 +8,9 @@
 
         <!-- Hero Section -->
         <div class="text-center mb-10">
-            <h1 class="text-4xl font-extrabold text-red-700 mb-4">Welcome to the Demon Compendium</h1>
+            <h1 class="font-semibold text-gray-700">Welcome to my Demon Compendium</h1>
             <p class="text-gray-700 text-lg mb-6">
-                Discover, document, and share the most powerful demons across myths, legends, and your own imagination.
+                A compendium of entities spanning the world and many variations of storytelling.
             </p>
 
             @guest
@@ -53,7 +53,7 @@
             <h2 class="text-2xl font-bold text-gray-800 mb-6 text-center">Recently Added Demons</h2>
 
             @if(isset($recentDemons) && $recentDemons->count() > 0)
-                <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-6">
+                <div class="grid gap-6" style="display: grid; grid-template-columns: repeat(5, minmax(0, 1fr));">
                     @foreach($recentDemons as $demon)
                         <a href="{{ route('demons.show', $demon->id) }}"
                            class="block bg-white rounded-xl shadow hover:shadow-lg transition overflow-hidden">
@@ -84,7 +84,7 @@
         @auth
             <div class="text-center">
                 <a href="{{ route('demons.create') }}"
-                   class="bg-green-600 text-white px-6 py-3 rounded-lg shadow hover:bg-green-700 transition">
+                   class="bg-red-600 text-white px-6 py-3 rounded-lg shadow hover:bg-red-500 transition">
                     Add a New Demon
                 </a>
             </div>

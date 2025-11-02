@@ -1,7 +1,7 @@
 @extends('layouts.nav')
 @section('content')
     <div class="max-w-4xl mx-auto px-6 py-10">
-        <h1 class="text-3xl font-bold text-gray-900 mb-6">User Profile</h1>
+        <h1 class="font-semibold text-gray-700">User Profile</h1>
 
         <div class="bg-white shadow-lg rounded-2xl p-6">
             <p><span class="font-semibold text-gray-700">Name:</span> {{ $user->name }}</p>
@@ -14,7 +14,7 @@
             @if($user->demons->isEmpty())
                 <p class="text-gray-500">You haven’t added any demons yet.</p>
             @else
-                <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+                <div class="grid gap-6" style="display: grid; grid-template-columns: repeat(5, minmax(0, 1fr));">
                     @foreach($user->demons as $demon)
                         @php
                             $img = $demon->image ?? $demon->image_url;

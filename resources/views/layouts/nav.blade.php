@@ -80,7 +80,7 @@
             <a href="{{ route('users.profile') }}" class="block px-4 py-2 hover:bg-red-800">Profile</a>
             <form method="POST" action="{{ route('logout') }}">
                 @csrf
-                <button type="submit" class="w-full text-left px-4 py-2 hover:bg-red-800">Logout</button>
+                <button type="submit" class="block px-4 py-2 hover:bg-red-800">Logout</button>
             </form>
         @else
             <a href="{{ route('login') }}" class="block px-4 py-2 hover:bg-red-800">Login</a>
@@ -101,7 +101,9 @@
 
 <!-- FOOTER -->
 <footer class="bg-gray-900 text-gray-400 text-center py-4 text-sm">
-    © {{ date('Y') }} Demon Compendium. All rights reserved.
+    © {{ date('Y') }} Demon Compendium. Site made by Dani as school project. Resources gathered from various online
+    sources.
+    Demons taken from the Megami Tensei franchise owned by Atlus.
 </footer>
 
 <!-- Scripts -->
